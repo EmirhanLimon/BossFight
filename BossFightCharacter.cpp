@@ -170,7 +170,7 @@ void ABossFightCharacter::BeginOverlap(UPrimitiveComponent* OverlappedComponent,
 void ABossFightCharacter::FirstSkill()
 {
 	FTimerHandle FirstSkillTimer;
-	if(collision == true)
+	if(collision == true && FirstSkillCooldown <= 0)
 	{
 		FirstSkillCooldown = 6;
 		collision = false;
@@ -189,7 +189,7 @@ void ABossFightCharacter::FirstSkill()
 void ABossFightCharacter::SecondSkill()
 {
 	FTimerHandle SecondSkillTimer;
-	if(collision == true)
+	if(collision == true && SecondSkillCooldown <= 0)
 	{
 		SecondSkillCooldown = 8;
 		collision = false;
@@ -209,7 +209,7 @@ void ABossFightCharacter::SecondSkill()
 void ABossFightCharacter::ThirdSkill()
 {
 	FTimerHandle ThirdSkillTimer;
-	if(collision == true)
+	if(collision == true && ThirdSkillCooldown <= 0)
 	{
 		ThirdSkillCooldown = 10;
 		collision = false;
