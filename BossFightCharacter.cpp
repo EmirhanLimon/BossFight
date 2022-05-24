@@ -55,6 +55,7 @@ ABossFightCharacter::ABossFightCharacter()
 	BossFightCharacterCompCapsule->SetupAttachment(GetRootComponent());
 
 	collision = false;
+	Completed = false;
 
 	FirstSkillCooldown = 0;
 	SecondSkillCooldown = 0;
@@ -66,6 +67,7 @@ void ABossFightCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	BossFightCharacterCompCapsule->OnComponentBeginOverlap.AddDynamic(this, &ABossFightCharacter::BeginOverlap);
+	
 	AbilityPointRestoreTrigger();
 }
 
@@ -163,24 +165,29 @@ void ABossFightCharacter::BeginOverlap(UPrimitiveComponent* OverlappedComponent,
 		collision = true;
 		GEngine->AddOnScreenDebugMessage(-1,1.0f,FColor::Red,TEXT("asda"));		
 	}
-
-	  
 }
+
+void ABossFightCharacter::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	collision = false;
+}
+
 
 void ABossFightCharacter::FirstSkill()
 {
 	FTimerHandle FirstSkillTimer;
-	if(collision == true && FirstSkillCooldown <= 0)
+	if(collision == true && FirstSkillCooldown <= 0 && Completed == true)
 	{
-		FirstSkillCooldown = 6;
-		collision = false;
+		
 		if(GetAbilityPoint() >= 20)
 		{
 			GEngine->AddOnScreenDebugMessage(-1,1.0f,FColor::Cyan,TEXT("1.Yetenek Kullanildi"));
 			SetAbilityPoint(GetAbilityPoint() - 20);
 			SetAIHealth(GetAIHealth() - 20);
+			FirstSkillCooldown = 6;
+			Completed = false;
 			FirstSkillCooldownReduction();
-			GetWorldTimerManager().SetTimer(FirstSkillTimer, this, &ABossFightCharacter::CollisionControl, 1.2f);	
+			GetWorldTimerManager().SetTimer(FirstSkillTimer, this, &ABossFightCharacter::CompletedControl, 1.2f);	
 		}
 		
 	}
@@ -189,17 +196,18 @@ void ABossFightCharacter::FirstSkill()
 void ABossFightCharacter::SecondSkill()
 {
 	FTimerHandle SecondSkillTimer;
-	if(collision == true && SecondSkillCooldown <= 0)
+	if(collision == true && SecondSkillCooldown <= 0 && Completed == true)
 	{
-		SecondSkillCooldown = 8;
-		collision = false;
+		
 		if(GetAbilityPoint() >= 30)
 		{
 			GEngine->AddOnScreenDebugMessage(-1,1.0f,FColor::Cyan,TEXT("2.Yetenek Kullanildi"));
 			SetAbilityPoint(GetAbilityPoint() - 30);
 			SetAIHealth(GetAIHealth() - 30);
+			SecondSkillCooldown = 8;
+			Completed = false;
 			SecondSkillCooldownReduction();
-			GetWorldTimerManager().SetTimer(SecondSkillTimer, this, &ABossFightCharacter::CollisionControl, 1.4f);	
+			GetWorldTimerManager().SetTimer(SecondSkillTimer, this, &ABossFightCharacter::CompletedControl, 1.4f);	
 		}
 	}
 	
@@ -209,17 +217,18 @@ void ABossFightCharacter::SecondSkill()
 void ABossFightCharacter::ThirdSkill()
 {
 	FTimerHandle ThirdSkillTimer;
-	if(collision == true && ThirdSkillCooldown <= 0)
+	if(collision == true && ThirdSkillCooldown <= 0 && Completed == true)
 	{
-		ThirdSkillCooldown = 10;
-		collision = false;
+		
 		if(GetAbilityPoint() >= 40)
 		{
 			GEngine->AddOnScreenDebugMessage(-1,1.0f,FColor::Cyan,TEXT("3.Yetenek Kullanildi"));
 			SetAbilityPoint(GetAbilityPoint() - 40);
 			SetAIHealth(GetAIHealth() - 40);
+			ThirdSkillCooldown = 10;
+			Completed = false;
 			ThirdSkillCooldownReduction();
-			GetWorldTimerManager().SetTimer(ThirdSkillTimer, this, &ABossFightCharacter::CollisionControl, 1.6f);	
+			GetWorldTimerManager().SetTimer(ThirdSkillTimer, this, &ABossFightCharacter::CompletedControl, 1.6f);	
 		}	
 	}
 	
@@ -232,9 +241,9 @@ void ABossFightCharacter::BasicAttack()
 	
 }
 
-void ABossFightCharacter::CollisionControl()
+void ABossFightCharacter::CompletedControl()
 {
-	collision = true;
+	Completed = true;
 }
 
 void ABossFightCharacter::AbilityPointRestore()

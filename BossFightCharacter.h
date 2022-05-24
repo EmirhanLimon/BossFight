@@ -64,6 +64,9 @@ public:
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 	bool collision;
+	bool Completed;
+	UFUNCTION()
+	void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	UFUNCTION()
 		void BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -74,7 +77,7 @@ public:
 	void SecondSkill();
 	void ThirdSkill();
 	void BasicAttack();
-	void CollisionControl();
+	void CompletedControl();
 	void AbilityPointRestore();
 	void AbilityPointRestoreTrigger();
 
