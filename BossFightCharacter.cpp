@@ -55,7 +55,7 @@ ABossFightCharacter::ABossFightCharacter()
 	BossFightCharacterCompCapsule->SetupAttachment(GetRootComponent());
 
 	collision = false;
-	Completed = false;
+	Completed = true;
 
 	FirstSkillCooldown = 0;
 	SecondSkillCooldown = 0;
@@ -67,6 +67,7 @@ void ABossFightCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	BossFightCharacterCompCapsule->OnComponentBeginOverlap.AddDynamic(this, &ABossFightCharacter::BeginOverlap);
+	BossFightCharacterCompCapsule->OnComponentEndOverlap.AddDynamic(this, &ABossFightCharacter::OnOverlapEnd);
 	
 	AbilityPointRestoreTrigger();
 }
