@@ -84,8 +84,17 @@ public:
 	void FirstSkillCooldownReduction();
 	void SecondSkillCooldownReduction();
 	void ThirdSkillCooldownReduction();
-	
+
+	void UseHealthPotion();
+	void UseAbilityPointPotion();
+
+	void HealthPotionCooldownReduction();
+	void AbilityPotionCooldownReduction();
 private:
+	float HealthPotion;
+	float HealthPotionPiece;
+	float AbilityPointPotion;
+	float AbilityPointPotionPiece;
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,meta=(AllowPrivateAccess="true"))
 	float Health = 200;
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,meta=(AllowPrivateAccess="true"))
@@ -100,6 +109,10 @@ private:
 	int SecondSkillCooldown;
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,meta=(AllowPrivateAccess="true"))
 	int ThirdSkillCooldown;
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,meta=(AllowPrivateAccess="true"))
+	int AbilityPointPotionCooldown;
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,meta=(AllowPrivateAccess="true"))
+	int HealthPotionCooldown;
 public:
 	FORCEINLINE void SetHealth(float NewHealth) { Health = NewHealth; }
 	FORCEINLINE float GetHealth() { return Health; }

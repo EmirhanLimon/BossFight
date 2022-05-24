@@ -60,6 +60,15 @@ ABossFightCharacter::ABossFightCharacter()
 	FirstSkillCooldown = 0;
 	SecondSkillCooldown = 0;
 	ThirdSkillCooldown = 0;
+
+	AbilityPointPotion = 30;
+	HealthPotion = 50;
+
+	AbilityPointPotionPiece = 5;
+	HealthPotionPiece = 5;
+
+	AbilityPointPotionCooldown = 0;
+	HealthPotionCooldown = 0;
 }
 
 void ABossFightCharacter::BeginPlay()
@@ -88,6 +97,9 @@ void ABossFightCharacter::SetupPlayerInputComponent(class UInputComponent* Playe
 	PlayerInputComponent->BindAction("FirstSkill", IE_Pressed, this, &ABossFightCharacter::FirstSkill);
 	PlayerInputComponent->BindAction("SecondSkill", IE_Pressed, this, &ABossFightCharacter::SecondSkill);
 	PlayerInputComponent->BindAction("ThirdSkill", IE_Pressed, this, &ABossFightCharacter::ThirdSkill);
+
+	PlayerInputComponent->BindAction("HealthPotion", IE_Pressed, this, &ABossFightCharacter::UseHealthPotion);
+	PlayerInputComponent->BindAction("AbilityPointPotion", IE_Pressed, this, &ABossFightCharacter::UseAbilityPointPotion);
 	
 	
 	PlayerInputComponent->BindAxis("Move Forward / Backward", this, &ABossFightCharacter::MoveForward);
@@ -301,6 +313,68 @@ void ABossFightCharacter::ThirdSkillCooldownReduction()
 		GEngine->AddOnScreenDebugMessage(-1,1.0f,FColor::Black,TEXT("aa"));
 	}
 }
+
+void ABossFightCharacter::UseHealthPotion()
+{
+	if(HealthPotionPiece > 0)
+	{
+		if(Health < 200 && Health >= 150)
+		{
+			Health = 200;
+		}
+		if(Health < 150 && Health > 0)
+		{
+			Health += 50;
+		}
+		HealthPotionPiece--;
+		HealthPotionCooldown = 10;
+		HealthPotionCooldownReduction();
+	}
+	
+}
+
+void ABossFightCharacter::UseAbilityPointPotion()
+{
+
+	if(AbilityPointPotionPiece > 0)
+	{
+		if(AbilityPointPotion < 200 && AbilityPointPotion >= 150)
+		{
+			AbilityPointPotion = 200;
+		}
+		if(AbilityPointPotion < 150 && AbilityPointPotion > 0)
+		{
+			AbilityPointPotion += 50;
+		}
+		AbilityPointPotionPiece--;
+		AbilityPointPotionCooldown = 10;
+		AbilityPotionCooldownReduction();
+	}
+}
+
+void ABossFightCharacter::AbilityPotionCooldownReduction()
+{
+	FTimerHandle AbilityPointPotionTimer;
+	if(AbilityPointPotionCooldown > 0)
+	{
+		AbilityPointPotionCooldown--;
+		GetWorldTimerManager().SetTimer(AbilityPointPotionTimer, this, &ABossFightCharacter::AbilityPotionCooldownReduction, 1.0f);
+	}
+ 
+	
+}
+
+void ABossFightCharacter::HealthPotionCooldownReduction()
+{
+	FTimerHandle HealthPotionTimer;
+	if(HealthPotionCooldown > 0)
+	{
+		HealthPotionCooldown--;
+		GetWorldTimerManager().SetTimer(HealthPotionTimer, this, &ABossFightCharacter::HealthPotionCooldownReduction, 1.0f);
+	}
+	
+}
+
 
 
 
