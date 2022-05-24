@@ -76,15 +76,11 @@ private:
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,meta=(AllowPrivateAccess="true"))
 	int ThirdSkillCooldown;
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,meta=(AllowPrivateAccess="true"))
-	float AIHealth = 100;
-	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,meta=(AllowPrivateAccess="true"))
 	float AIAttack = 10;
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,meta=(AllowPrivateAccess="true"))
 	float AIAbilityPoint = 100;
 public:
-	FORCEINLINE void SetAIHealth(float AINewHealth) { AIHealth = AINewHealth; }
-	FORCEINLINE float GetAIHealth() { return AIHealth; }
-
+	
 	FORCEINLINE void SetAIAttack(float AINewAttack) { AIAttack = AINewAttack; }
 	FORCEINLINE float GetAIAttack() { return AIAttack; }
 

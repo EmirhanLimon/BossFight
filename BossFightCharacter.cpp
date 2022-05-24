@@ -6,6 +6,7 @@
 #include "Components/InputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
+#include "AICharacter.h"
 #include "GameFramework/SpringArmComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -49,7 +50,22 @@ ABossFightCharacter::ABossFightCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+
+	BossFightCharacterCompCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("BossFightCharacterCompCapsuleCpp"));
+	BossFightCharacterCompCapsule->SetupAttachment(GetRootComponent());
+
+	collision = false;
 }
+
+void ABossFightCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	BossFightCharacterCompCapsule->OnComponentBeginOverlap.AddDynamic(this, &ABossFightCharacter::BeginOverlap);
+}
+
+
+
 
 //////////////////////////////////////////////////////////////////////////
 // Input
@@ -61,6 +77,11 @@ void ABossFightCharacter::SetupPlayerInputComponent(class UInputComponent* Playe
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
+	PlayerInputComponent->BindAction("FirstSkill", IE_Pressed, this, &ABossFightCharacter::FirstSkill);
+	PlayerInputComponent->BindAction("SecondSkill", IE_Pressed, this, &ABossFightCharacter::SecondSkill);
+	PlayerInputComponent->BindAction("ThirdSkill", IE_Pressed, this, &ABossFightCharacter::ThirdSkill);
+	
+	
 	PlayerInputComponent->BindAxis("Move Forward / Backward", this, &ABossFightCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("Move Right / Left", this, &ABossFightCharacter::MoveRight);
 
@@ -127,3 +148,73 @@ void ABossFightCharacter::MoveRight(float Value)
 		AddMovementInput(Direction, Value);
 	}
 }
+
+void ABossFightCharacter::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	AAICharacter* Carp1 = Cast<AAICharacter>(OtherActor);	
+	if(Carp1 && collision == false)
+	{
+		
+		collision = true;
+		GEngine->AddOnScreenDebugMessage(-1,1.0f,FColor::Red,TEXT("asda"));		
+	}
+
+	  
+}
+
+void ABossFightCharacter::FirstSkill()
+{
+	FTimerHandle FirstSkillTimer;
+	if(collision == true)
+	{
+		if(GetAbilityPoint() >= 20)
+		{
+			GEngine->AddOnScreenDebugMessage(-1,1.0f,FColor::Cyan,TEXT("1.Yetenek Kullanildi"));
+			SetAbilityPoint(GetAbilityPoint() - 20);
+			SetAIHealth(GetAIHealth() - 20);
+			GetWorldTimerManager().SetTimer(FirstSkillTimer, this, &ABossFightCharacter::CollisionControl, 1.2f);	
+		}
+		
+	}
+}
+
+void ABossFightCharacter::SecondSkill()
+{
+	FTimerHandle SecondSkillTimer;
+	if(GetAbilityPoint() >= 30)
+	{
+		GEngine->AddOnScreenDebugMessage(-1,1.0f,FColor::Cyan,TEXT("2.Yetenek Kullanildi"));
+		SetAbilityPoint(GetAbilityPoint() - 30);
+		SetAIHealth(GetAIHealth() - 30);
+		GetWorldTimerManager().SetTimer(SecondSkillTimer, this, &ABossFightCharacter::CollisionControl, 1.4f);	
+	}
+	
+}
+
+void ABossFightCharacter::ThirdSkill()
+{
+	FTimerHandle ThirdSkillTimer;
+	if(GetAbilityPoint() >= 40)
+	{
+		GEngine->AddOnScreenDebugMessage(-1,1.0f,FColor::Cyan,TEXT("3.Yetenek Kullanildi"));
+		SetAbilityPoint(GetAbilityPoint() - 40);
+		SetAIHealth(GetAIHealth() - 40);
+		GetWorldTimerManager().SetTimer(ThirdSkillTimer, this, &ABossFightCharacter::CollisionControl, 1.6f);	
+	}
+	
+	
+}
+
+void ABossFightCharacter::BasicAttack()
+{
+	
+}
+
+void ABossFightCharacter::CollisionControl()
+{
+	collision = false;
+}
+
+
+
+

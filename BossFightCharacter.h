@@ -55,6 +55,7 @@ protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	// End of APawn interface
+	virtual void BeginPlay() override;
 
 public:
 	/** Returns CameraBoom subobject **/
@@ -62,16 +63,38 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
+	bool collision;
+
+	UFUNCTION()
+		void BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UPROPERTY(EditDefaultsOnly)
+	class UCapsuleComponent* BossFightCharacterCompCapsule;
+
+	void FirstSkill();
+	void SecondSkill();
+	void ThirdSkill();
+	void BasicAttack();
+	void CollisionControl();
 private:
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,meta=(AllowPrivateAccess="true"))
-	float Health = 100;
+	float Health = 200;
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,meta=(AllowPrivateAccess="true"))
 	float Attack = 10;
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,meta=(AllowPrivateAccess="true"))
+	float AbilityPoint = 100;
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,meta=(AllowPrivateAccess="true"))
+	float AIHealth = 100;
 public:
 	FORCEINLINE void SetHealth(float NewHealth) { Health = NewHealth; }
 	FORCEINLINE float GetHealth() { return Health; }
 
 	FORCEINLINE void SetAttack(float NewAttack) { Attack = NewAttack; }
 	FORCEINLINE float GetAttack() { return Attack; }
+
+	FORCEINLINE void SetAbilityPoint(float NewAbilityPoint) { AbilityPoint = NewAbilityPoint; }
+	FORCEINLINE float GetAbilityPoint() { return AbilityPoint; }
+
+	FORCEINLINE void SetAIHealth(float NewAIHealth) { AIHealth = NewAIHealth; }
+	FORCEINLINE float GetAIHealth() { return AIHealth; }
 };
 

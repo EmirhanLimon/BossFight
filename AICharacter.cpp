@@ -74,7 +74,7 @@ void AAICharacter::SeePawn(APawn* Pawn)
 
 
 		AIC_Ref->MoveToLocation(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation(), -1.0f);
-		GetCharacterMovement()->MaxWalkSpeed = 1000;
+		GetCharacterMovement()->MaxWalkSpeed = 700;
 		GetWorldTimerManager().SetTimer(Timer, this, &AAICharacter::NewMovement, 2.0f);
 		
 	}
@@ -93,7 +93,7 @@ void AAICharacter::OnHearNoise(APawn* OtherActor, const FVector& Location, float
 		AIC_Ref->MoveToLocation(GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation(), -1);
 
 		GetWorldTimerManager().SetTimer(Timer, this, &AAICharacter::NewMovement, 2.0f);
-		GetCharacterMovement()->MaxWalkSpeed = 1000;
+		GetCharacterMovement()->MaxWalkSpeed = 700;
 		
 	}
 }
