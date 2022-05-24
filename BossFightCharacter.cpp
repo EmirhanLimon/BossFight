@@ -55,6 +55,10 @@ ABossFightCharacter::ABossFightCharacter()
 	BossFightCharacterCompCapsule->SetupAttachment(GetRootComponent());
 
 	collision = false;
+
+	FirstSkillCooldown = 0;
+	SecondSkillCooldown = 0;
+	ThirdSkillCooldown = 0;
 }
 
 void ABossFightCharacter::BeginPlay()
@@ -62,6 +66,7 @@ void ABossFightCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	BossFightCharacterCompCapsule->OnComponentBeginOverlap.AddDynamic(this, &ABossFightCharacter::BeginOverlap);
+	AbilityPointRestoreTrigger();
 }
 
 
@@ -167,11 +172,14 @@ void ABossFightCharacter::FirstSkill()
 	FTimerHandle FirstSkillTimer;
 	if(collision == true)
 	{
+		FirstSkillCooldown = 6;
+		collision = false;
 		if(GetAbilityPoint() >= 20)
 		{
 			GEngine->AddOnScreenDebugMessage(-1,1.0f,FColor::Cyan,TEXT("1.Yetenek Kullanildi"));
 			SetAbilityPoint(GetAbilityPoint() - 20);
 			SetAIHealth(GetAIHealth() - 20);
+			FirstSkillCooldownReduction();
 			GetWorldTimerManager().SetTimer(FirstSkillTimer, this, &ABossFightCharacter::CollisionControl, 1.2f);	
 		}
 		
@@ -181,26 +189,40 @@ void ABossFightCharacter::FirstSkill()
 void ABossFightCharacter::SecondSkill()
 {
 	FTimerHandle SecondSkillTimer;
-	if(GetAbilityPoint() >= 30)
+	if(collision == true)
 	{
-		GEngine->AddOnScreenDebugMessage(-1,1.0f,FColor::Cyan,TEXT("2.Yetenek Kullanildi"));
-		SetAbilityPoint(GetAbilityPoint() - 30);
-		SetAIHealth(GetAIHealth() - 30);
-		GetWorldTimerManager().SetTimer(SecondSkillTimer, this, &ABossFightCharacter::CollisionControl, 1.4f);	
+		SecondSkillCooldown = 8;
+		collision = false;
+		if(GetAbilityPoint() >= 30)
+		{
+			GEngine->AddOnScreenDebugMessage(-1,1.0f,FColor::Cyan,TEXT("2.Yetenek Kullanildi"));
+			SetAbilityPoint(GetAbilityPoint() - 30);
+			SetAIHealth(GetAIHealth() - 30);
+			SecondSkillCooldownReduction();
+			GetWorldTimerManager().SetTimer(SecondSkillTimer, this, &ABossFightCharacter::CollisionControl, 1.4f);	
+		}
 	}
+	
 	
 }
 
 void ABossFightCharacter::ThirdSkill()
 {
 	FTimerHandle ThirdSkillTimer;
-	if(GetAbilityPoint() >= 40)
+	if(collision == true)
 	{
-		GEngine->AddOnScreenDebugMessage(-1,1.0f,FColor::Cyan,TEXT("3.Yetenek Kullanildi"));
-		SetAbilityPoint(GetAbilityPoint() - 40);
-		SetAIHealth(GetAIHealth() - 40);
-		GetWorldTimerManager().SetTimer(ThirdSkillTimer, this, &ABossFightCharacter::CollisionControl, 1.6f);	
+		ThirdSkillCooldown = 10;
+		collision = false;
+		if(GetAbilityPoint() >= 40)
+		{
+			GEngine->AddOnScreenDebugMessage(-1,1.0f,FColor::Cyan,TEXT("3.Yetenek Kullanildi"));
+			SetAbilityPoint(GetAbilityPoint() - 40);
+			SetAIHealth(GetAIHealth() - 40);
+			ThirdSkillCooldownReduction();
+			GetWorldTimerManager().SetTimer(ThirdSkillTimer, this, &ABossFightCharacter::CollisionControl, 1.6f);	
+		}	
 	}
+	
 	
 	
 }
@@ -212,8 +234,64 @@ void ABossFightCharacter::BasicAttack()
 
 void ABossFightCharacter::CollisionControl()
 {
-	collision = false;
+	collision = true;
 }
+
+void ABossFightCharacter::AbilityPointRestore()
+{
+	FTimerHandle AbilityPointRestoreTimer;
+	if(GetAbilityPoint() < 100)
+	{
+		SetAbilityPoint(GetAbilityPoint() + 1);
+		GetWorldTimerManager().SetTimer(AbilityPointRestoreTimer, this, &ABossFightCharacter::AbilityPointRestore, 0.3f);
+	}
+	else
+	{
+		AbilityPointRestoreTrigger();
+	}
+	
+}
+
+void ABossFightCharacter::AbilityPointRestoreTrigger()
+{
+	FTimerHandle AbilityPointTriggerTimer;
+	GetWorldTimerManager().SetTimer(AbilityPointTriggerTimer, this, &ABossFightCharacter::AbilityPointRestore, 0.1f);
+	
+}
+
+void ABossFightCharacter::FirstSkillCooldownReduction()
+{
+	FTimerHandle FirstSkillReductionTimer;
+	if(FirstSkillCooldown > 0)
+	{
+		FirstSkillCooldown -= 1;
+		GetWorldTimerManager().SetTimer(FirstSkillReductionTimer, this, &ABossFightCharacter::FirstSkillCooldownReduction, 1.0f);
+		GEngine->AddOnScreenDebugMessage(-1,1.0f,FColor::Black,TEXT("aa"));
+	}
+}
+
+void ABossFightCharacter::SecondSkillCooldownReduction()
+{
+	FTimerHandle SecondSkillReductionTimer;
+	if(SecondSkillCooldown > 0)
+	{
+		SecondSkillCooldown -= 1;
+		GetWorldTimerManager().SetTimer(SecondSkillReductionTimer, this, &ABossFightCharacter::SecondSkillCooldownReduction, 1.0f);
+		GEngine->AddOnScreenDebugMessage(-1,1.0f,FColor::Black,TEXT("aa"));
+	}
+}
+
+void ABossFightCharacter::ThirdSkillCooldownReduction()
+{
+	FTimerHandle ThirdSkillReductionTimer;
+	if(ThirdSkillCooldown > 0)
+	{
+		ThirdSkillCooldown -= 1;
+		GetWorldTimerManager().SetTimer(ThirdSkillReductionTimer, this, &ABossFightCharacter::ThirdSkillCooldownReduction, 1.0f);
+		GEngine->AddOnScreenDebugMessage(-1,1.0f,FColor::Black,TEXT("aa"));
+	}
+}
+
 
 
 

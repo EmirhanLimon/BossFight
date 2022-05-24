@@ -75,6 +75,13 @@ public:
 	void ThirdSkill();
 	void BasicAttack();
 	void CollisionControl();
+	void AbilityPointRestore();
+	void AbilityPointRestoreTrigger();
+
+	void FirstSkillCooldownReduction();
+	void SecondSkillCooldownReduction();
+	void ThirdSkillCooldownReduction();
+	
 private:
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,meta=(AllowPrivateAccess="true"))
 	float Health = 200;
@@ -83,7 +90,13 @@ private:
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,meta=(AllowPrivateAccess="true"))
 	float AbilityPoint = 100;
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,meta=(AllowPrivateAccess="true"))
-	float AIHealth = 100;
+	float AIHealth = 500;
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,meta=(AllowPrivateAccess="true"))
+	int FirstSkillCooldown;
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,meta=(AllowPrivateAccess="true"))
+	int SecondSkillCooldown;
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,meta=(AllowPrivateAccess="true"))
+	int ThirdSkillCooldown;
 public:
 	FORCEINLINE void SetHealth(float NewHealth) { Health = NewHealth; }
 	FORCEINLINE float GetHealth() { return Health; }
