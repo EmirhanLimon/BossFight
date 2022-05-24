@@ -92,8 +92,10 @@ public:
 	void AbilityPotionCooldownReduction();
 private:
 	float HealthPotion;
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,meta=(AllowPrivateAccess="true"))
 	float HealthPotionPiece;
 	float AbilityPointPotion;
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,meta=(AllowPrivateAccess="true"))
 	float AbilityPointPotionPiece;
 	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite,meta=(AllowPrivateAccess="true"))
 	float Health = 200;

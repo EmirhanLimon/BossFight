@@ -97,6 +97,7 @@ void ABossFightCharacter::SetupPlayerInputComponent(class UInputComponent* Playe
 	PlayerInputComponent->BindAction("FirstSkill", IE_Pressed, this, &ABossFightCharacter::FirstSkill);
 	PlayerInputComponent->BindAction("SecondSkill", IE_Pressed, this, &ABossFightCharacter::SecondSkill);
 	PlayerInputComponent->BindAction("ThirdSkill", IE_Pressed, this, &ABossFightCharacter::ThirdSkill);
+	PlayerInputComponent->BindAction("BasicAttack", IE_Pressed, this, &ABossFightCharacter::BasicAttack);
 
 	PlayerInputComponent->BindAction("HealthPotion", IE_Pressed, this, &ABossFightCharacter::UseHealthPotion);
 	PlayerInputComponent->BindAction("AbilityPointPotion", IE_Pressed, this, &ABossFightCharacter::UseAbilityPointPotion);
@@ -251,7 +252,14 @@ void ABossFightCharacter::ThirdSkill()
 
 void ABossFightCharacter::BasicAttack()
 {
-	
+	FTimerHandle BasicAttackTimer;
+	if(collision == true  && Completed == true)
+	{
+		GEngine->AddOnScreenDebugMessage(-1,1.0f,FColor::Cyan,TEXT("Basic Attack Kullanildi"));
+		SetAIHealth(GetAIHealth() - 10);
+		Completed = false;
+		GetWorldTimerManager().SetTimer(BasicAttackTimer, this, &ABossFightCharacter::CompletedControl, 1.0f);
+	}
 }
 
 void ABossFightCharacter::CompletedControl()
@@ -316,18 +324,19 @@ void ABossFightCharacter::ThirdSkillCooldownReduction()
 
 void ABossFightCharacter::UseHealthPotion()
 {
-	if(HealthPotionPiece > 0)
+	if(Health < 200 && HealthPotionCooldown <= 0 && HealthPotionPiece >0)
 	{
 		if(Health < 200 && Health >= 150)
 		{
 			Health = 200;
+			
 		}
 		if(Health < 150 && Health > 0)
 		{
-			Health += 50;
+			Health = Health + HealthPotion;
 		}
-		HealthPotionPiece--;
 		HealthPotionCooldown = 10;
+		HealthPotionPiece--;
 		HealthPotionCooldownReduction();
 	}
 	
@@ -336,18 +345,19 @@ void ABossFightCharacter::UseHealthPotion()
 void ABossFightCharacter::UseAbilityPointPotion()
 {
 
-	if(AbilityPointPotionPiece > 0)
+	if(AbilityPoint < 100 && AbilityPointPotionCooldown <= 0 && AbilityPointPotionPiece >0)
 	{
-		if(AbilityPointPotion < 200 && AbilityPointPotion >= 150)
+		if(AbilityPoint < 100 && AbilityPoint >= 70)
 		{
-			AbilityPointPotion = 200;
+			AbilityPoint = 100;
+			
 		}
-		if(AbilityPointPotion < 150 && AbilityPointPotion > 0)
+		if(AbilityPoint < 70 && AbilityPoint > 0)
 		{
-			AbilityPointPotion += 50;
+			AbilityPoint = AbilityPoint + AbilityPointPotion;
 		}
-		AbilityPointPotionPiece--;
 		AbilityPointPotionCooldown = 10;
+		AbilityPointPotionPiece--;
 		AbilityPotionCooldownReduction();
 	}
 }
